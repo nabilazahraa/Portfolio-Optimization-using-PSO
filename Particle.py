@@ -11,6 +11,8 @@ def calculate_sharpe_ratio(weights, returns, risk_free_rate):
     # We will maximize Sharpe Ratio by minimizing negative Sharpe Ratio
     return -sharpe_ratio
 
+
+# Implement the PSO algorithm
 class Particle:
     def __init__(self, n_assets):
         self.position = np.random.dirichlet(np.ones(n_assets), size=1)[0]
@@ -34,3 +36,4 @@ class Particle:
         # Ensure the position is a valid probability distribution again
         self.position = np.clip(self.position, 1e-3, 1-1e-3)  # Avoid 0 weights
         self.position /= np.sum(self.position)  # Normalize
+
