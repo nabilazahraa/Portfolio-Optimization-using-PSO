@@ -11,14 +11,26 @@ def calculate_portfolio_volatility(weights, returns):
     return portfolio_volatility
 
 def calculate_sharpe_ratio(weights, returns, risk_free_rate):
-    # Calculate the expected portfolio return
-    portfolio_return = np.sum(returns.mean() * weights) * 252  # Assuming 252 trading days in a year
-    # Calculate the expected portfolio volatility
-    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(returns.cov() * 252, weights)))
-    # Calculate the Sharpe Ratio
+    portfolio_return = calculate_portfolio_return(weights, returns)
+    portfolio_volatility = calculate_portfolio_volatility(weights, returns)
     sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_volatility
-    # We will maximize Sharpe Ratio by minimizing negative Sharpe Ratio
-    return -sharpe_ratio
+    return -sharpe_ratio  # Return negative for minimization in PSO
+
+def calculate_downside_deviation(returns, target=0):
+    underperformance = np.minimum(0, returns - target)
+    return np.sqrt(np.mean(underperformance**2))
+
+def calculate_sortino_ratio(weights, returns, risk_free_rate, target=0):
+    portfolio_return = calculate_portfolio_return(weights, returns)
+    downside_deviation = calculate_downside_deviation(returns @ weights, target)
+    sortino_ratio = (portfolio_return - risk_free_rate) / downside_deviation
+    return -sortino_ratio  # Minimize negative Sortino for maximization in PSO
+
+def calculate_maximum_drawdown(returns):
+    cumulative_returns = (1 + returns).cumprod()
+    peak = cumulative_returns.expanding(min_periods=1).max()
+    drawdown = (cumulative_returns / peak) - 1
+    return -drawdown.min()  # Return positive value
 
 
 
@@ -30,24 +42,27 @@ class Particle:
         self.best_position = np.copy(self.position)
         self.best_value = float('inf')
 
-    def evaluate(self, returns, risk_free_rate, optimize_for='sharpe_ratio'):
-        if optimize_for == '1':
+    def evaluate(self, returns, risk_free_rate, optimize_for='1'):
+        if optimize_for == '1':  # Sharpe Ratio
             value = calculate_sharpe_ratio(self.position, returns, risk_free_rate)
-        elif optimize_for == '2':
+        elif optimize_for == '2':  # Volatility
             value = calculate_portfolio_volatility(self.position, returns)
-        elif optimize_for == '3':
+        elif optimize_for == '3':  # Return (Maximizing)
             value = calculate_portfolio_return(self.position, returns)
-            # Since we want to maximize return, we return the negative value as we are minimizing in PSO
-            value = -value
+            value = -value  # Maximizing, minimize negative
+        elif optimize_for == '4':  # Sortino Ratio
+            value = calculate_sortino_ratio(self.position, returns, risk_free_rate)
+        elif optimize_for == '5':  # Maximum Drawdown
+            value = calculate_maximum_drawdown(returns @ self.position)
         else:
             raise ValueError("Invalid optimization goal specified.")
 
-        # Update the personal best if needed
         if value < self.best_value:
             self.best_value = value
             self.best_position = np.copy(self.position)
 
         return value
+
 
     def update_velocity_and_position(self, global_best_position, w, c1, c2):
         inertia = w * self.velocity

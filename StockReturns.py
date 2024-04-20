@@ -1,6 +1,7 @@
 import yfinance as yf
 
 def getStockReturns(tickers, startDate, end_date):
+    print("Fetching data...")
     data = yf.download(tickers, start=startDate, end=end_date)
     # We'll consider adjusted closing prices
     adjustedClose = data['Adj Close']
