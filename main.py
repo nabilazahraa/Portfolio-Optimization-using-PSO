@@ -3,17 +3,21 @@ import numpy as np
 from Particle import Particle
 from StockReturns import getStockReturns
 from Particle import calculate_portfolio_return, calculate_portfolio_volatility
+from datetime import datetime, timedelta
 
-tickers = ['AAPL', 'MSFT', 'GOOG', 'GOOGL', 'AMZN', 'TSLA']
-start_date = '2020-01-01'
-end_date = '2021-01-01'
+tickers = ['AAPL', 'MSFT', 'GOOG', 'GOOGL', 'AMZN', 'TSLA', 'JNJ']
+start_date = (datetime.now() - timedelta(days=365 * 10)).strftime('%Y-%m-%d')
+end_date = datetime.now().strftime('%Y-%m-%d')
+print("Fetching data...")
 daily_returns = getStockReturns(tickers, start_date, end_date)
 
 # PSO parameters
 n_iterations = 100
 n_particles = 30
 n_assets = len(tickers)
-risk_free_rate = 0.02
+T_Bill = getStockReturns(['^IRX'], start_date, end_date)
+risk_free_rate = T_Bill.iloc[-1].mean()/100
+# risk_free_rate = 0.02
 w = 0.1  # inertia
 c1 = 2 # cognitive parameter
 c2 = 2  # social parameter
@@ -54,11 +58,16 @@ while True:
     optimal_weights = global_best_position
     if optimize_goal == '3':  # If the goal was to maximize return
         associated_risk = calculate_portfolio_volatility(global_best_position, daily_returns)
-        print(f"Associated risk (volatility) for maximized returns: {associated_risk * 100:.2f}%")
+        print(f"\nAssociated risk (volatility) for maximized returns: {associated_risk * 100:.2f}%")
     elif optimize_goal == '2':  # If the goal was to minimize risk
         associated_return = calculate_portfolio_return(global_best_position, daily_returns)
-        print(f"Associated return for minimized risk: {associated_return * 100:.2f}%")
-    for stock in range(len(tickers)):
-        if optimal_weights[stock] > 0.001:
-            print('|' + str(tickers[stock]).rjust(7, ' '), '|' + '{:.1f}'.format(100 * round(optimal_weights[stock], 3) ).rjust(11, ' ') + '% |')
-    print("Optimal Weights:", optimal_weights)
+        print(f"\nAssociated return for minimized risk: {associated_return * 100:.2f}%")
+    # Create a list of (ticker, weight) tuples
+    ticker_weights = [(tickers[i], optimal_weights[i]) for i in range(len(tickers)) if optimal_weights[i] > 0.001]
+
+    # Sort the list in descending order by weight
+    sorted_ticker_weights = sorted(ticker_weights, key=lambda x: x[1], reverse=True)
+
+    # Print the sorted list
+    for ticker, weight in sorted_ticker_weights:
+        print(f"| {ticker.rjust(7, ' ')} | {100 * weight:.1f}% |")
