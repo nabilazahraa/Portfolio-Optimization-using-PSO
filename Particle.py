@@ -2,7 +2,7 @@ import numpy as np
 
 def calculate_portfolio_return(weights, returns):
     # Calculate the expected portfolio return
-    portfolio_return = np.sum(returns.mean() * weights) * 252  # Assuming 252 trading days in a year
+    portfolio_return = np.dot(weights, returns.mean()) * 252  # Assuming 252 trading days in a year
     return portfolio_return
 
 def calculate_portfolio_volatility(weights, returns):
@@ -26,12 +26,6 @@ def calculate_sortino_ratio(weights, returns, risk_free_rate, target=0):
     sortino_ratio = (portfolio_return - risk_free_rate) / downside_deviation
     return -sortino_ratio  # Minimize negative Sortino for maximization in PSO
 
-def calculate_maximum_drawdown(returns):
-    cumulative_returns = (1 + returns).cumprod()
-    peak = cumulative_returns.expanding(min_periods=1).max()
-    drawdown = (cumulative_returns / peak) - 1
-    return -drawdown.min()  # Return positive value
-
 
 
 # Implement the PSO algorithm
@@ -52,8 +46,6 @@ class Particle:
             value = -value  # Maximizing, minimize negative
         elif optimize_for == '4':  # Sortino Ratio
             value = calculate_sortino_ratio(self.position, returns, risk_free_rate)
-        elif optimize_for == '5':  # Maximum Drawdown
-            value = calculate_maximum_drawdown(returns @ self.position)
         else:
             raise ValueError("Invalid optimization goal specified.")
 
@@ -65,12 +57,13 @@ class Particle:
 
 
     def update_velocity_and_position(self, global_best_position, w, c1, c2):
+        r1, r2 = np.random.rand(2)  # random coefficients
         inertia = w * self.velocity
-        cognitive = c1 * np.random.random() * (self.best_position - self.position)
-        social = c2 * np.random.random() * (global_best_position - self.position)
+        cognitive = c1 * r1 * (self.best_position - self.position)
+        social = c2 * r2 * (global_best_position - self.position)
         self.velocity = inertia + cognitive + social
         self.position += self.velocity
-        # Ensure the position is a valid probability distribution again
-        self.position = np.clip(self.position, 1e-3, 1-1e-3)  # Avoid 0 weights
-        self.position /= np.sum(self.position)  # Normalize
+        self.position = np.clip(self.position, 1e-3, None)  # Prevent 0 weights that can lead to division by zero
+        self.position /= np.sum(self.position)  # Normalize to ensure the sum of weights is 1
+
 

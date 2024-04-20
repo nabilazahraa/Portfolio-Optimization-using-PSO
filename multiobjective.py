@@ -11,10 +11,9 @@ class MultiObjectiveParticle:
         self.best_returns = -float('inf')
         self.best_volatility = float('inf')
 
-    def evaluate(self, returns, risk_free_rate):
-        current_return = -calculate_sharpe_ratio(self.position, returns, risk_free_rate)
+    def evaluate(self, returns):
+        current_return = calculate_portfolio_return(self.position, returns)
         current_volatility = calculate_portfolio_volatility(self.position, returns)
-        # Check for personal best update
         if (self.is_better(current_return, self.best_returns, current_volatility, self.best_volatility)):
             self.best_position = np.copy(self.position)
             self.best_returns = current_return
@@ -27,11 +26,11 @@ class MultiObjectiveParticle:
         return better_return and better_volatility
 
     def update_velocity_and_position(self, global_best_position, w, c1, c2):
+        r1, r2 = np.random.rand(2)  # random coefficients
         inertia = w * self.velocity
-        cognitive = c1 * np.random.random() * (self.best_position - self.position)
-        social = c2 * np.random.random() * (global_best_position - self.position)
+        cognitive = c1 * r1 * (self.best_position - self.position)
+        social = c2 * r2 * (global_best_position - self.position)
         self.velocity = inertia + cognitive + social
         self.position += self.velocity
-        self.position = np.clip(self.position, 1e-3, 1-1e-3)  # Ensure valid weights
-        self.position /= np.sum(self.position)
-
+        self.position = np.clip(self.position, 1e-3, None)  # Prevent 0 weights that can lead to division by zero
+        self.position /= np.sum(self.position)  # Normalize to ensure the sum of weights is 1
