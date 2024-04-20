@@ -1,5 +1,14 @@
 import numpy as np
 
+def calculate_portfolio_return(weights, returns):
+    # Calculate the expected portfolio return
+    portfolio_return = np.sum(returns.mean() * weights) * 252  # Assuming 252 trading days in a year
+    return portfolio_return
+
+def calculate_portfolio_volatility(weights, returns):
+    # Calculate the expected portfolio volatility
+    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(returns.cov() * 252, weights)))
+    return portfolio_volatility
 
 def calculate_sharpe_ratio(weights, returns, risk_free_rate):
     # Calculate the expected portfolio return
@@ -11,10 +20,6 @@ def calculate_sharpe_ratio(weights, returns, risk_free_rate):
     # We will maximize Sharpe Ratio by minimizing negative Sharpe Ratio
     return -sharpe_ratio
 
-def calculate_portfolio_volatility(weights, returns):
-    # Calculate the expected portfolio volatility
-    portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(returns.cov() * 252, weights)))
-    return portfolio_volatility
 
 
 # Implement the PSO algorithm
@@ -30,14 +35,15 @@ class Particle:
             value = calculate_sharpe_ratio(self.position, returns, risk_free_rate)
         elif optimize_for == '2':
             value = calculate_portfolio_volatility(self.position, returns)
-            # Since we want to minimize volatility, we return it directly without negation
+        elif optimize_for == '3':
+            value = calculate_portfolio_return(self.position, returns)
+            # Since we want to maximize return, we return the negative value as we are minimizing in PSO
+            value = -value
         else:
             raise ValueError("Invalid optimization goal specified.")
+
         # Update the personal best if needed
-        if optimize_for == 'sharpe ratio' and value < self.best_value:
-            self.best_value = value
-            self.best_position = np.copy(self.position)
-        elif optimize_for == 'volatility' and value < self.best_value:
+        if value < self.best_value:
             self.best_value = value
             self.best_position = np.copy(self.position)
 

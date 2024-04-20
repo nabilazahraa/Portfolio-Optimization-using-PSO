@@ -22,8 +22,7 @@ swarm = [Particle(n_assets) for _ in range(n_particles)]
 global_best_value = float('inf')
 global_best_position = None
 
-optimize_goal = input("Enter optimization goal (1) for sharpe ratio or (2) for volatility:")
-
+optimize_goal = input("Enter optimization goal (1) for sharpe ratio, (2) for volatility, or (3) for return: ").lower()
 # Run the PSO algorithm
 for iteration in range(n_iterations):
     for particle in swarm:
@@ -40,10 +39,11 @@ for iteration in range(n_iterations):
         print(f"Iteration {iteration} - Best Sharpe Ratio: {-global_best_value}")
     elif(optimize_goal == '2'):
         print(f"Iteration {iteration} - Best Volatility: {global_best_value}")
+    elif(optimize_goal == '3'):
+        print(f"Iteration {iteration} - Best Return: {-global_best_value}")
 
 optimal_weights = global_best_position
 for stock in range(len(tickers)):
             if optimal_weights[stock] > 0.001:
-                print('|' + str(tickers[stock]).rjust(7, ' '), 
-                      '|' + '{:.1f}'.format(100 * round(optimal_weights[stock], 3) ).rjust(11, ' ') + '% |')
+                print('|' + str(tickers[stock]).rjust(7, ' '), '|' + '{:.1f}'.format(100 * round(optimal_weights[stock], 3) ).rjust(11, ' ') + '% |')
 print("Optimal Weights:", optimal_weights)
