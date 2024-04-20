@@ -6,7 +6,8 @@ from Particle import calculate_portfolio_return, calculate_portfolio_volatility
 from datetime import datetime, timedelta
 from multiobjective import MultiObjectiveParticle
 
-tickers = ['AAPL', 'MSFT', 'GOOG', 'GOOGL', 'AMZN', 'TSLA', 'JNJ']
+# tickers = ['AAPL', 'MSFT', 'GOOG', 'GOOGL', 'AMZN', 'TSLA', 'JNJ']
+tickers = ["MSFT", "AAPL", "NVDA", "AMZN", "META", "GOOGL", "GOOG", "LLY", "AVGO", "JPM", "XOM", "UNH", "V", "TSLA", "MA", "PG", "JNJ", "HD", "MRK", "COST", "ABBV", "CVX", "NFLX", "CRM", "WMT", "AMD", "BAC", "PEP", "KO", "LIN", "ADBE", "WFC", "TMO", "DIS", "ACN", "MCD", "CSCO", "ORCL", "ABT", "CAT", "QCOM", "INTU", "VZ", "GE", "IBM", "AMAT", "CMCSA", "DHR", "COP", "NOW"]
 start_date = (datetime.now() - timedelta(days=365 * 10)).strftime('%Y-%m-%d')
 end_date = datetime.now().strftime('%Y-%m-%d')
 print("Fetching data...")
@@ -32,7 +33,7 @@ while True:
         for iteration in range(n_iterations):
             for particle in swarm:
                 ret, vol = particle.evaluate(daily_returns, risk_free_rate)
-                print(f" Return: {ret}, Volatility: {vol}")
+                print(f"Iteration {iteration} - Return: {ret}, Volatility: {vol}")
         optimal_weights = swarm[0].best_position
 
     elif optimize_goal in ['1', '2', '3', '4', '5']:
@@ -74,7 +75,7 @@ while True:
             print(f"\nAssociated return for minimized risk: {associated_return * 100:.2f}%")
             
     # Create a list of (ticker, weight) tuples
-    ticker_weights = [(tickers[i], optimal_weights[i]) for i in range(len(tickers)) if optimal_weights[i] > 0.001]
+    ticker_weights = [(tickers[i], optimal_weights[i]) for i in range(len(tickers)) if optimal_weights[i] > 0.01]
 
     # Sort the list in descending order by weight
     sorted_ticker_weights = sorted(ticker_weights, key=lambda x: x[1], reverse=True)

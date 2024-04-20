@@ -35,23 +35,3 @@ class MultiObjectiveParticle:
         self.position = np.clip(self.position, 1e-3, 1-1e-3)  # Ensure valid weights
         self.position /= np.sum(self.position)
 
-# tickers = ['AAPL', 'MSFT', 'GOOG', 'GOOGL', 'AMZN', 'TSLA', 'JNJ']
-# start_date = '2020-01-01'
-# end_date = '2021-01-01'
-# daily_returns = getStockReturns(tickers, start_date, end_date)
-# T_Bill = getStockReturns(['^IRX'], start_date, end_date)
-# risk_free_rate = T_Bill.iloc[-1].mean()/100
-
-# # Example of running the PSO
-# n_assets = len(tickers)
-# n_iterations = 100
-# particles = [MultiObjectiveParticle(n_assets) for _ in range(30)]
-# for iteration in range(n_iterations):
-#     for particle in particles:
-#         ret, vol = particle.evaluate(daily_returns, risk_free_rate)
-#         print(f"Return: {ret}, Volatility: {vol}")
-       
-# optimal_weights = particles[0].best_position
-# for stock in range(len(tickers)):
-#         if optimal_weights[stock] > 0.01:
-#             print('|' + str(tickers[stock]).rjust(7, ' '), '|' + '{:.1f}'.format(100 * round(particle.best_position[stock], 3) ).rjust(11, ' ') + '% |')
