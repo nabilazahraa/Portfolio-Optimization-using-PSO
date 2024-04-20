@@ -4,6 +4,7 @@ from Particle import Particle
 from StockReturns import getStockReturns
 from Particle import calculate_portfolio_return, calculate_portfolio_volatility
 from datetime import datetime, timedelta
+from multiobjective import MultiObjectiveParticle
 
 tickers = ['AAPL', 'MSFT', 'GOOG', 'GOOGL', 'AMZN', 'TSLA', 'JNJ']
 start_date = (datetime.now() - timedelta(days=365 * 10)).strftime('%Y-%m-%d')
@@ -23,45 +24,55 @@ c1 = 2 # cognitive parameter
 c2 = 2  # social parameter
 
 while True:
-    optimize_goal = input("Enter optimization goal:\n (1) Sharpe Ratio\n (2) Volatility (Minimizing Risk)\n (3) Return (Maximizing Return)\n (4) Sortino Ratio\n (5) Maximum Drawdown\nEnter your choice (type 'exit' to quit): ").lower()
+    optimize_goal = input("Enter optimization goal:\n (1) Sharpe Ratio\n (2) Volatility (Minimizing Risk)\n (3) Return (Maximizing Return)\n (4) Sortino Ratio\n (5) Maximum Drawdown\n (6) Multiobjective\n Enter your choice (type 'exit' to quit): ").lower()
     if optimize_goal == 'exit':
         break
+    if optimize_goal in '6':
+        swarm = [MultiObjectiveParticle(n_assets) for _ in range(n_particles)]
+        for iteration in range(n_iterations):
+            for particle in swarm:
+                ret, vol = particle.evaluate(daily_returns, risk_free_rate)
+                print(f" Return: {ret}, Volatility: {vol}")
+        optimal_weights = swarm[0].best_position
 
-    # Initialize the swarm
-    swarm = [Particle(n_assets) for _ in range(n_particles)]
-    global_best_value = float('inf')
-    global_best_position = None
+    elif optimize_goal in ['1', '2', '3', '4', '5']:
+        # Initialize the swarm
+        swarm = [Particle(n_assets) for _ in range(n_particles)]
+        global_best_value = float('inf')
+        global_best_position = None
 
-    # Run the PSO algorithm
-    for iteration in range(n_iterations):
-        for particle in swarm:
-            value = particle.evaluate(daily_returns, risk_free_rate, optimize_goal)
-            # Update the global best if needed
-            if value < global_best_value:
-                global_best_value = value
-                global_best_position = np.copy(particle.position)
+        # Run the PSO algorithm
+        for iteration in range(n_iterations):
+            for particle in swarm:
+                value = particle.evaluate(daily_returns, risk_free_rate, optimize_goal)
+                # Update the global best if needed
+                if value < global_best_value:
+                    global_best_value = value
+                    global_best_position = np.copy(particle.position)
 
-        for particle in swarm:
-            particle.update_velocity_and_position(global_best_position, w, c1, c2)
+            for particle in swarm:
+                particle.update_velocity_and_position(global_best_position, w, c1, c2)
 
-        if(optimize_goal == '1'):
-            print(f"Iteration {iteration} - Best Sharpe Ratio: {-global_best_value}")
-        elif(optimize_goal == '2'):
-            print(f"Iteration {iteration} - Best Volatility: {global_best_value}")
-        elif(optimize_goal == '3'):
-            print(f"Iteration {iteration} - Best Return: {-global_best_value}")
-        elif(optimize_goal == '4'):
-            print(f"Iteration {iteration} - Best Sortino Ratio: {-global_best_value}")
-        elif(optimize_goal == '5'):
-            print(f"Iteration {iteration} - Best Maximum Drawdown: {global_best_value}")
+            if(optimize_goal == '1'):
+                print(f"Iteration {iteration} - Best Sharpe Ratio: {-global_best_value}")
+            elif(optimize_goal == '2'):
+                print(f"Iteration {iteration} - Best Volatility: {global_best_value}")
+            elif(optimize_goal == '3'):
+                print(f"Iteration {iteration} - Best Return: {-global_best_value}")
+            elif(optimize_goal == '4'):
+                print(f"Iteration {iteration} - Best Sortino Ratio: {-global_best_value}")
+            elif(optimize_goal == '5'):
+                print(f"Iteration {iteration} - Best Maximum Drawdown: {global_best_value}")
+            
 
-    optimal_weights = global_best_position
-    if optimize_goal == '3':  # If the goal was to maximize return
-        associated_risk = calculate_portfolio_volatility(global_best_position, daily_returns)
-        print(f"\nAssociated risk (volatility) for maximized returns: {associated_risk * 100:.2f}%")
-    elif optimize_goal == '2':  # If the goal was to minimize risk
-        associated_return = calculate_portfolio_return(global_best_position, daily_returns)
-        print(f"\nAssociated return for minimized risk: {associated_return * 100:.2f}%")
+        optimal_weights = global_best_position
+        if optimize_goal == '3':  # If the goal was to maximize return
+            associated_risk = calculate_portfolio_volatility(global_best_position, daily_returns)
+            print(f"\nAssociated risk (volatility) for maximized returns: {associated_risk * 100:.2f}%")
+        elif optimize_goal == '2':  # If the goal was to minimize risk
+            associated_return = calculate_portfolio_return(global_best_position, daily_returns)
+            print(f"\nAssociated return for minimized risk: {associated_return * 100:.2f}%")
+            
     # Create a list of (ticker, weight) tuples
     ticker_weights = [(tickers[i], optimal_weights[i]) for i in range(len(tickers)) if optimal_weights[i] > 0.001]
 
