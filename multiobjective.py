@@ -11,8 +11,8 @@ class MultiObjectiveParticle:
         self.best_returns = -float('inf')
         self.best_volatility = float('inf')
 
-    def evaluate(self, returns):
-        current_return = -calculate_sharpe_ratio(self.position, returns, 0.02)
+    def evaluate(self, returns, risk_free_rate):
+        current_return = -calculate_sharpe_ratio(self.position, returns, risk_free_rate)
         current_volatility = calculate_portfolio_volatility(self.position, returns)
         # Check for personal best update
         if (self.is_better(current_return, self.best_returns, current_volatility, self.best_volatility)):
@@ -40,12 +40,14 @@ tickers = ['AAPL', 'MSFT', 'GOOG', 'GOOGL', 'AMZN', 'TSLA', 'JNJ']
 start_date = '2020-01-01'
 end_date = '2021-01-01'
 daily_returns = getStockReturns(tickers, start_date, end_date)
+T_Bill = getStockReturns(['^IRX'], start_date, end_date)
+risk_free_rate = T_Bill.iloc[-1].mean()/100
 
 # Example of running the PSO
 n_assets = len(tickers)
 particles = [MultiObjectiveParticle(n_assets) for _ in range(30)]
 for particle in particles:
-    ret, vol = particle.evaluate(daily_returns)
+    ret, vol = particle.evaluate(daily_returns,risk_free_rate)
     print(f"Return: {ret}, Volatility: {vol}")
 
 for stock in range(len(tickers)):
