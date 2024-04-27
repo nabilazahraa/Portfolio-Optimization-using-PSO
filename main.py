@@ -106,3 +106,5 @@ while True:
     # Print the sorted list
     for ticker, weight in sorted_ticker_weights:
         print(f"| {ticker.rjust(7, ' ')} | {100 * weight:.1f}% |")
+    
+    

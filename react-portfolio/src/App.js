@@ -1,24 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'; 
 import Modal from 'react-modal';
+import Chart from 'chart.js/auto'; // Import Chart.js library
 
-Modal.setAppElement('#root'); // This line is needed for accessibility reasons
-
+Modal.setAppElement('#root');
 
 function App() {
     const [tickers, setTickers] = useState(['MSFT', 'AAPL', 'NVDA', 'AMZN', 'META', 'GOOGL', 'LLY', 'AVGO', 'JPM', 'NFLX'])
     const [selectedTickers, setSelectedTickers] = useState([]);
     const [inputTicker, setInputTicker] = useState('');
-    const [startDate, setStartDate] = useState('2020-01-01');
-    const [endDate, setEndDate] = useState('2021-01-01');
+    const [startDate, setStartDate] = useState('2015-01-01');
+    const [endDate, setEndDate] = useState('2024-01-01');
     const [riskFreeRate, setRiskFreeRate] = useState(0.02);
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [goal, setGoal] = useState('1')
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [showSummary, setShowSummary] = useState(false); // State to manage summary visibility
+    const [pieChart, setPieChart] = useState(null); // State to hold the pie chart instance
 
+    useEffect(() => {
+        if (result && result.sorted_ticker_weights) {
+            renderPieChart(result.sorted_ticker_weights);
+        }
+    }, [result]);
+
+    
+
+    const renderPieChart = (data) => {
+        const ctx = document.getElementById('pieChart');
+        if (ctx) {
+            if (pieChart) {
+                pieChart.destroy(); // Destroy existing chart instance
+            }
+            setPieChart(new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.map(item => item[0]),
+                    datasets: [{
+                        label: 'Allocations',
+                        data: data.map(item => item[1] * 100), // Convert to percentage
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 152, 215, 0.7)',    
+                            'rgba(255, 206, 86, 0.7)',   
+                            'rgba(75, 180, 190, 0.9)',   
+                            'rgba(153, 102, 255, 0.7)',  
+                            'rgba(255, 159, 64, 0.7)',   
+                            'rgba(155, 99, 132, 0.9)',   
+                            'rgba(54, 162, 235, 0.7)',   
+                            'rgba(255, 106, 56, 0.7)',    
+                            'rgba(75, 192, 192, 0.7)'    
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            }));
+        }
+    };
 
     const handleTickerClick = (ticker) => {
         setInputTicker(ticker);
@@ -50,6 +95,7 @@ function App() {
             });
             setResult(response.data);
             setModalIsOpen(true); // Open the modal after getting the result
+            setShowSummary(true); // Show summary when result is available
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -112,11 +158,7 @@ function App() {
                         <input type="date" className="form-control" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                     </div>
                 </div>
-                <div className="mb-3">
-                    <label className="form-label-left">Risk-Free Rate (%):</label>
-                    <input type="number" className="form-control" value={riskFreeRate} step="0.01" onChange={(e) => setRiskFreeRate(parseFloat(e.target.value))} />
-                </div>
-
+ 
                 <div className="row-1">
                 <div className="col-md-4">
                     <div className="card">
@@ -179,23 +221,42 @@ function App() {
             </div>
             </form>
             {loading && <div className="loading-overlay"><div className="spinner"></div></div>}
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={() => setModalIsOpen(false)}
-                contentLabel="Results"
-                className="Modal"
-                overlayClassName="Overlay"
+            {/* <div className="pie-chart-container">
+                    <canvas id="pieChart"></canvas>
+            </div> */}
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={() => setModalIsOpen(false)}
+                    contentLabel="Results"
+                    className="Modal"
+                    overlayClassName="Overlay"
                 >
-                <h2>Allocations</h2>
-                {result && result.sorted_ticker_weights && (
-                    <div>
-                        {result.sorted_ticker_weights.map((item, index) => (
-                            <p key={index}>{item[0]}: {(item[1]*100).toFixed(2)}%</p>
-                        ))}
-                    </div>
-                )}
-                <button className="btn" onClick={() => setModalIsOpen(false)}>Close</button>
-            </Modal>
+                    <h2>Allocations</h2>
+                    {result && result.sorted_ticker_weights && (
+                        <div>
+                            {result.sorted_ticker_weights.map((item, index) => (
+                                <p key={index}>{item[0]}: {(item[1]*100).toFixed(2)}%</p>
+                            ))}
+                        </div>
+                    )}
+                    <button className="btn" onClick={() => setModalIsOpen(false)}>Close</button>
+                </Modal>
+                {showSummary && ( // Show summary when showSummary is true
+                <div className="pie-chart-summary-container row-1">
+                <div className="pie-chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <div className="statistical-summary">
+                    <h2>Statistical Summary</h2>
+                    {result && (
+                        <div>
+                            <p>Associated Risk: {(result.associated_risk * 100).toFixed(2)}%</p>
+                            <p>Associated Return: {(result.associated_return * 100).toFixed(2)}%</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+            )}
         </div>
         </div>
     );

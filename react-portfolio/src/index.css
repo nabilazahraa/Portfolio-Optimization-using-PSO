@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.pie-chart-summary-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pie-chart-container {
+  flex: 1;
+  margin-right: 20px; /* Adjust margin as needed */
+}
+
+.statistical-summary {
+  flex: 1;
+}
+

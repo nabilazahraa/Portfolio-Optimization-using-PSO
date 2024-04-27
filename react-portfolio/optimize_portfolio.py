@@ -5,16 +5,14 @@ from Particle import *
 from StockReturns import *
 from multiobjective import *
 
-def optimize_portfolio(selected_tickers, optimization_goal):
-    start_date = (datetime.now() - timedelta(days=365 * 10)).strftime('%Y-%m-%d')
-    end_date = datetime.now().strftime('%Y-%m-%d')
+def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal):
     daily_returns = getStockReturns(selected_tickers, start_date, end_date)
 
     n_iterations = 300
     n_particles = 30
     n_assets = len(selected_tickers)
-    T_Bill = getStockReturns(['^IRX'], start_date, end_date)
-    risk_free_rate = T_Bill.mean().mean()/100
+    T_Bill = yf.download(['^IRX'], start_date, end_date)
+    risk_free_rate = T_Bill['Adj Close'].mean()/100
 
     # PSO parameters
     w = 0.1  # inertia
@@ -45,6 +43,10 @@ def optimize_portfolio(selected_tickers, optimization_goal):
 
         # Determine the optimal weights from best positions
         optimal_weights = global_best_position
+        associated_risk = calculate_portfolio_volatility(global_best_position, daily_returns)
+        associated_return = calculate_portfolio_return(global_best_position, daily_returns)
+
+
 
     else:
         # Initialize the swarm
@@ -84,12 +86,8 @@ def optimize_portfolio(selected_tickers, optimization_goal):
                 print(f"Iteration {iteration} - Best Sortino Ratio: {-global_best_value}")
 
         optimal_weights = global_best_position
-        if optimization_goal == '3':  # If the goal was to maximize return
-            associated_risk = calculate_portfolio_volatility(global_best_position, daily_returns)
-            print(f"\nAssociated risk (volatility) for maximized returns: {associated_risk * 100:.2f}% \n")
-        elif optimization_goal == '2':  # If the goal was to minimize risk
-            associated_return = calculate_portfolio_return(global_best_position, daily_returns)
-            print(f"\nAssociated return for minimized risk: {associated_return * 100:.2f}% \n")
+        associated_risk = calculate_portfolio_volatility(global_best_position, daily_returns)
+        associated_return = calculate_portfolio_return(global_best_position, daily_returns)
 
         # Create a list of (ticker, weight) tuples
     ticker_weights = [(selected_tickers[i], optimal_weights[i]) for i in range(len(selected_tickers)) if optimal_weights[i] > 0.01]
@@ -97,9 +95,13 @@ def optimize_portfolio(selected_tickers, optimization_goal):
     # Sort the list in descending order by weight
     sorted_ticker_weights = sorted(ticker_weights, key=lambda x: x[1], reverse=True)
 
+
+
     results = {
         'optimization goal': optimization_goal,
-        'sorted_ticker_weights': sorted_ticker_weights
+        'sorted_ticker_weights': sorted_ticker_weights,
+        'associated_risk': associated_risk,
+        'associated_return': associated_return
     }
 
     return results
