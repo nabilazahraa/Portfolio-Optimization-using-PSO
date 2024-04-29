@@ -11,9 +11,10 @@ def calculate_portfolio_volatility(weights, returns):
     return portfolio_volatility
 
 def calculate_sharpe_ratio(weights, returns, risk_free_rate):
+    rf_daily = (1+ risk_free_rate) **(1/252) - 1
     portfolio_return = calculate_portfolio_return(weights, returns)
     portfolio_volatility = calculate_portfolio_volatility(weights, returns)
-    sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_volatility
+    sharpe_ratio = (portfolio_return - rf_daily) / portfolio_volatility
     return -sharpe_ratio  # Return negative for minimization in PSO
 
 def calculate_downside_deviation(returns, target=0):
@@ -21,9 +22,10 @@ def calculate_downside_deviation(returns, target=0):
     return np.sqrt(np.mean(underperformance**2))
 
 def calculate_sortino_ratio(weights, returns, risk_free_rate, target=0):
+    rf_daily = (1+ risk_free_rate) **(1/252) - 1
     portfolio_return = calculate_portfolio_return(weights, returns)
     downside_deviation = calculate_downside_deviation(returns @ weights, target)
-    sortino_ratio = (portfolio_return - risk_free_rate) / downside_deviation
+    sortino_ratio = (portfolio_return - rf_daily) / downside_deviation
     return -sortino_ratio  # Minimize negative Sortino for maximization in PSO
 
 
@@ -31,7 +33,9 @@ def calculate_sortino_ratio(weights, returns, risk_free_rate, target=0):
 # Implement the PSO algorithm
 class Particle:
     def __init__(self, n_assets):
-        self.position = np.random.dirichlet(np.ones(n_assets), size=1)[0]
+        # self.position = np.random.dirichlet(np.ones(n_assets), size=1)[0]
+        self.position = np.random.rand(n_assets)
+        self.position /= self.position.sum()  # Normalize to ensure the sum of weights is 1
         self.velocity = np.zeros(n_assets)
         self.best_position = np.copy(self.position)
         self.best_value = float('inf')

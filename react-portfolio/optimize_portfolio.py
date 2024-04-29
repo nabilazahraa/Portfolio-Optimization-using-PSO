@@ -4,12 +4,13 @@ from datetime import datetime, timedelta
 from Particle import *
 from StockReturns import *
 from multiobjective import *
+import matplotlib.pyplot as plt
 
 def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal):
     daily_returns = getStockReturns(selected_tickers, start_date, end_date)
 
-    n_iterations = 300
-    n_particles = 30
+    n_iterations = 250
+    n_particles = 100
     n_assets = len(selected_tickers)
     T_Bill = yf.download(['^IRX'], start_date, end_date)
     risk_free_rate = T_Bill['Adj Close'].mean()/100
@@ -23,6 +24,8 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
         # Initialize the swarm
         swarm = [MultiObjectiveParticle(n_assets) for _ in range(n_particles)]
         # Perform iterations
+
+        best_values_over_iterations = [] 
         for iteration in range(n_iterations):
             global_best_returns = -float('inf')
             global_best_volatility = float('inf')
@@ -34,7 +37,7 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
                     global_best_position = particle.position
                     global_best_returns = ret
                     global_best_volatility = vol
-
+            best_values_over_iterations.append((global_best_returns, global_best_volatility))
             for particle in swarm:
                 particle.update_velocity_and_position(global_best_position, w, c1, c2)
             
@@ -53,7 +56,7 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
         swarm = [Particle(n_assets) for _ in range(n_particles)]
         global_best_value = float('inf')
         global_best_position = None
-
+        best_values_over_iterations = [] 
         # Run the PSO algorithm
         for iteration in range(n_iterations):
             for particle in swarm:
@@ -72,7 +75,7 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
                 if value < global_best_value:
                     global_best_value = value
                     global_best_position = np.copy(particle.position)
-
+            best_values_over_iterations.append(-global_best_value)
             for particle in swarm:
                 particle.update_velocity_and_position(global_best_position, w, c1, c2)
 
@@ -104,4 +107,5 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
         'associated_return': associated_return
     }
 
-    return results
+   
+    return results, best_values_over_iterations

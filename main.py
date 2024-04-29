@@ -5,6 +5,8 @@ from StockReturns import getStockReturns
 from Particle import calculate_portfolio_return, calculate_portfolio_volatility
 from datetime import datetime, timedelta
 from multiobjective import MultiObjectiveParticle
+import matplotlib.pyplot as plt
+import yfinance as yf
 
 tickers = ["MSFT", "AAPL", "NVDA", "AMZN", "META", "GOOGL", "GOOG", "LLY", "AVGO", "JPM"]
 start_date = (datetime.now() - timedelta(days=365 * 10)).strftime('%Y-%m-%d')
@@ -13,12 +15,12 @@ print("Fetching data...")
 daily_returns = getStockReturns(tickers, start_date, end_date)
 
 # PSO parameters
-n_iterations = 300
-n_particles = 30
+n_iterations = 250
+n_particles = 100
 n_assets = len(tickers)
-T_Bill = getStockReturns(['^IRX'], start_date, end_date)
+T_Bill = yf.download(['^IRX'], start_date, end_date)
+risk_free_rate = T_Bill['Adj Close'].mean()/100
 
-risk_free_rate = T_Bill.mean().mean()/100
 
 # risk_free_rate = T_Bill.iloc[-1].mean()/100
 # risk_free_rate = 0.02
@@ -66,6 +68,7 @@ while True:
         swarm = [Particle(n_assets) for _ in range(n_particles)]
         global_best_value = float('inf')
         global_best_position = None
+        best_values= [] 
 
         # Run the PSO algorithm
         for iteration in range(n_iterations):
@@ -75,7 +78,7 @@ while True:
                 if value < global_best_value:
                     global_best_value = value
                     global_best_position = np.copy(particle.position)
-
+            best_values.append(-global_best_value)
             for particle in swarm:
                 particle.update_velocity_and_position(global_best_position, w, c1, c2)
 
@@ -107,4 +110,10 @@ while True:
     for ticker, weight in sorted_ticker_weights:
         print(f"| {ticker.rjust(7, ' ')} | {100 * weight:.1f}% |")
     
-    
+    plt.figure(figsize=(10, 5))
+    plt.plot(best_values, marker='o', linestyle='-', color='b')
+    plt.title('Convergence of PSO Optimization (Best Sharpe Ratio)')
+    plt.xlabel('Iteration')
+    plt.ylabel('Best Sharpe Ratio')
+    plt.grid(True)
+    plt.show()
