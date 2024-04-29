@@ -25,7 +25,8 @@ class MultiObjectiveParticle:
         better_volatility = vol1 < vol2
         return better_return and better_volatility
 
-    def update_velocity_and_position(self, global_best_position, w, c1, c2):
+    def update_velocity_and_position(self, global_best_position, w, c1, c2, iteration, n_iterations):
+        w = w - (w - 0.4) * (iteration / n_iterations) #self adaptive
         r1, r2 = np.random.rand(2)  # random coefficients
         inertia = w * self.velocity
         cognitive = c1 * r1 * (self.best_position - self.position)

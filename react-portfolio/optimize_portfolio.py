@@ -16,7 +16,7 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
     risk_free_rate = T_Bill['Adj Close'].mean()/100
 
     # PSO parameters
-    w = 0.1  # inertia
+    w = 0.9  # inertia
     c1 = 2  # cognitive parameter
     c2 = 2  # social parameter
 
@@ -39,7 +39,7 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
                     global_best_volatility = vol
             best_values_over_iterations.append((global_best_returns, global_best_volatility))
             for particle in swarm:
-                particle.update_velocity_and_position(global_best_position, w, c1, c2)
+                particle.update_velocity_and_position(global_best_position, w, c1, c2, iteration, n_iterations)
             
             print(f"Iteration {iteration}: Return: {global_best_returns}, Volatility: {global_best_volatility}")
 
@@ -77,7 +77,7 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
                     global_best_position = np.copy(particle.position)
             best_values_over_iterations.append(-global_best_value)
             for particle in swarm:
-                particle.update_velocity_and_position(global_best_position, w, c1, c2)
+                particle.update_velocity_and_position(global_best_position, w, c1, c2,iteration, n_iterations,swarm)
 
             if optimization_goal == '1':
                 print(f"Iteration {iteration} - Best Sharpe Ratio: {-global_best_value}")

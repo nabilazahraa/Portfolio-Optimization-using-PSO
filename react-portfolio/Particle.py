@@ -3,15 +3,16 @@ import numpy as np
 def calculate_portfolio_return(weights, returns):
     # Calculate the expected portfolio return
     portfolio_return = np.dot(weights, returns.mean()) * 252  # Assuming 252 trading days in a year
+    
     return portfolio_return
 
 def calculate_portfolio_volatility(weights, returns):
-    # Calculate the expected portfolio volatility
+    # # Calculate the expected portfolio volatility
     portfolio_volatility = np.sqrt(np.dot(weights.T, np.dot(returns.cov() * 252, weights)))
     return portfolio_volatility
 
 def calculate_sharpe_ratio(weights, returns, risk_free_rate):
-    rf_daily = (1+ risk_free_rate) **(1/252) - 1
+    rf_daily = (1+ risk_free_rate) ** (1/252) - 1
     portfolio_return = calculate_portfolio_return(weights, returns)
     portfolio_volatility = calculate_portfolio_volatility(weights, returns)
     sharpe_ratio = (portfolio_return - rf_daily) / portfolio_volatility
@@ -60,7 +61,15 @@ class Particle:
         return value
 
 
-    def update_velocity_and_position(self, global_best_position, w, c1, c2):
+    def update_velocity_and_position(self, global_best_position, w, c1, c2, iteration, max_iterations, particles):
+        w = w - (w - 0.4) * (iteration / max_iterations) #self adaptive
+        individual_distance = np.mean([np.linalg.norm(p.position - p.best_position) for p in particles])
+        global_distance = np.mean([np.linalg.norm(p.position - global_best_position) for p in particles])
+
+        # Adjust c1 and c2 based on distances
+        c1 = min(2.5, c1 + 0.05 * (individual_distance - 0.1))  # Encourage more exploration if far from personal best
+        c2 = min(2.5, c2 + 0.05 * (global_distance - 0.1))  # Encourage more exploitation if far from global best
+
         r1, r2 = np.random.rand(2)  # random coefficients
         inertia = w * self.velocity
         cognitive = c1 * r1 * (self.best_position - self.position)

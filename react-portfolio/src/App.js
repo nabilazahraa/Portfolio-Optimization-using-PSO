@@ -316,6 +316,7 @@ function App() {
  
                 <div className="row-1">
                 <div className="col-md-4">
+                    <label>
                     <div className="card">
                         <div className="card-header">
                             Maximize Sharpe Ratio
@@ -325,8 +326,10 @@ function App() {
                         </div>
                         <input type="radio" name="goal" value="1" checked={goal === '1'} onChange={(e) => setGoal(e.target.value)} className='radio-button'  />
                     </div>
+                    </label>
                 </div>
                 <div className="col-md-4">
+                    <label>
                     <div className="card">
                         <div className="card-header">
                             Minimize Volatility
@@ -336,8 +339,10 @@ function App() {
                         </div>
                         <input type="radio" name="goal" value="2" checked={goal === '2'} onChange={(e) => setGoal(e.target.value)} className='radio-button' />
                     </div>
+                    </label>
                 </div>
                 <div className="col-md-4">
+                    <label>
                     <div className="card">
                         <div className="card-header">
                             Maximize Returns
@@ -347,8 +352,10 @@ function App() {
                         </div>
                         <input type="radio" name="goal" value="3" checked={goal === '3'} onChange={(e) => setGoal(e.target.value)} className='radio-button'  />
                     </div>
+                    </label>
                 </div>
                 <div className="col-md-4">
+                    <label>
                     <div className="card">
                         <div className="card-header">
                             Maximize Sortino Ratio
@@ -358,8 +365,10 @@ function App() {
                         </div>
                         <input type="radio" name="goal" value="4" checked={goal === '4'} onChange={(e) => setGoal(e.target.value)} className='radio-button'  />
                     </div>
+                    </label>
                 </div>
                 <div className="col-md-4">
+                    <label>
                     <div className="card">
                         <div className="card-header">
                             MOPSO (Max Returns - Min Risk)
@@ -369,6 +378,7 @@ function App() {
                         </div>
                         <input type="radio" name="goal" value="5" checked={goal === '5'} onChange={(e) => setGoal(e.target.value)} className='radio-button' />
                     </div>
+                    </label>
                 </div>
             </div>
             <div className='btn-row'>
