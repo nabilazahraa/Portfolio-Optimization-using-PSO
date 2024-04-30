@@ -10,7 +10,7 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
     daily_returns = getStockReturns(selected_tickers, start_date, end_date)
 
     n_iterations = 250
-    n_particles = 100
+    n_particles = 10
     n_assets = len(selected_tickers)
     T_Bill = yf.download(['^IRX'], start_date, end_date)
     risk_free_rate = T_Bill['Adj Close'].mean()/100
