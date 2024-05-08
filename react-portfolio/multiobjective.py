@@ -25,9 +25,16 @@ class MultiObjectiveParticle:
         better_volatility = vol1 < vol2
         return better_return and better_volatility
 
-    def update_velocity_and_position(self, global_best_position, w, c1, c2, iteration, n_iterations):
+    def update_velocity_and_position(self, global_best_position, w, c1, c2, iteration, n_iterations, particles):
         w = w - (w - 0.4) * (iteration / n_iterations) #self adaptive
-        r1, r2 = np.random.rand(2)  # random coefficients
+        r1, r2 = np.random.rand(2)  #    random coefficients
+        individual_distance = np.mean([np.linalg.norm(p.position - p.best_position) for p in particles])
+        global_distance = np.mean([np.linalg.norm(p.position - global_best_position) for p in particles])
+
+        # Adjust c1 and c2 based on distances
+        c1 = min(2.5, c1 + 0.05 * (individual_distance - 0.1))  # Encourage more exploration if far from personal best
+        c2 = min(2.5, c2 + 0.05 * (global_distance - 0.1))  # Encourage more exploitation if far from global best
+
         inertia = w * self.velocity
         cognitive = c1 * r1 * (self.best_position - self.position)
         social = c2 * r2 * (global_best_position - self.position)
