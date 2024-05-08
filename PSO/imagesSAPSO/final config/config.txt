@@ -24,3 +24,27 @@ Iteration 199 - Best Volatility: 0.19810593876221108
 |    AAPL | 9.6% |
 associated_risk:  0.19810593876221108
 associated_return:  0.2595631928286027
+
+Iteration 199 - Best Return: 0.6446470831375115
+|     JPM | 99.5% |
+associated_risk:  0.47036127482724244
+associated_return:  0.6446470831375115
+
+
+Iteration 199 - Best Sortino Ratio: 40.92968445129115
+|    GOOG | 58.5% |
+|     JPM | 41.0% |
+associated_risk:  0.2769532598264274
+associated_return:  0.44984489288090296
+
+teration 199: Return: 0.32502719503328964, Volatility: 0.21202426626277707
+|    GOOG | 38.0% |
+|    AMZN | 17.6% |
+|     JPM | 11.4% |
+|    AVGO | 9.5% |
+|    NVDA | 9.4% |
+|    AAPL | 8.2% |
+|     LLY | 8.1% |
+|    MSFT | 2.7% |
+associated_risk:  0.22848323204560372
+associated_return:  0.3411804146540042

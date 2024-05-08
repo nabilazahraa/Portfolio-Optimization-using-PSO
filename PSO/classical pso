@@ -1,0 +1,58 @@
+Optimal Portfolio for Maximizing Sharpe Ratio:
+
+|    GOOG | 51.9% |
+|     JPM | 34.7% |
+|    NVDA | 13.4% |
+
+Associated Risk (Volatility): 26.74%
+Associated Return: 43.88%
+
+Associated Sharpe Ratio: 1.64
+
+
+Best after iteration 200: [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.] -3.123056571330985
+Stopping search: maximum iterations reached --> 200
+
+Optimal Portfolio for Maximizing Return:
+
+|    MSFT | 10.0% |
+|    AAPL | 10.0% |
+|    NVDA | 10.0% |
+|    AMZN | 10.0% |
+|    META | 10.0% |
+|   GOOGL | 10.0% |
+|    GOOG | 10.0% |
+|     LLY | 10.0% |
+|    AVGO | 10.0% |
+|     JPM | 10.0% |
+
+Associated Risk (Volatility): 23.52%
+Associated Return: 31.23%
+
+Associated Return: 3.12
+
+
+Optimal Portfolio for Maximizing Sortino Ratio:
+
+|    NVDA | 33.3% |
+|    GOOG | 33.3% |
+|     JPM | 33.3% |
+
+Associated Risk (Volatility): 28.27%
+Associated Return: 44.83%
+
+Associated Sortino Ratio: 38.55
+
+Best after iteration 199: [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] 0.0
+Best after iteration 200: [0. 0. 0. 0. 0. 0. 0. 0. 0. 0.] 0.0
+Stopping search: maximum iterations reached --> 200
+/Users/nabilazahra/Library/CloudStorage/OneDrive-HabibUniversity/Computatioal Intelligence/Portfolio-Optimization-main/Portfolio-Optimization-using-PSO/PSO/ClassicPSO.py:64: RuntimeWarning: invalid value encountered in divide
+  optimal_weights /= np.sum(optimal_weights)
+
+Optimal Portfolio for Minimizing Volatility:
+
+
+Associated Risk (Volatility): nan%
+Associated Return: nan%
+
+Associated Volatility: 0.00

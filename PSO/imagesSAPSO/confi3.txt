@@ -36,3 +36,8 @@ Iteration 99: Return: 0.37327172021524274, Volatility: 0.23984131613397014
 |    AAPL | 7.2% |
 associated_risk:  0.23465753988652743
 associated_return:  0.35624377071447766
+
+w= 0.7 c1= 2.5
+c2 = 1.5
+n= 30 
+i = 100

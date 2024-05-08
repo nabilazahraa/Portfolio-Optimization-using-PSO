@@ -1,4 +1,4 @@
-num_generations=1000, population_size=30
+num_generations=1000, population_size=50
 
 Generation 999 - Best Sortino Ratio: 39.59303603081567
 {'optimization goal': '4', 'sorted_ticker_weights': [('GOOGL', 55.15420321373006), ('NFLX', 37.60218136515917), ('NVDA', 4.592792333503547)], 'associated_risk': 26.97571351155058, 'associated_return': 44.072592348490815}
