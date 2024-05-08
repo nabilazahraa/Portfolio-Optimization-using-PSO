@@ -1,0 +1,46 @@
+w = 0.9
+c1 = 1.5
+c2 = 1.5
+n =100
+iter = 250
+
+Iteration 249 - Best Sharpe Ratio: 1.6403454751072992
+|    GOOG | 51.7% |
+|     JPM | 34.7% |
+|    NVDA | 13.1% |
+associated_risk:  0.2671948380524765
+associated_return:  0.4383487164511724
+
+Iteration 248 - Best Volatility: 0.19798334371190118
+Iteration 249 - Best Volatility: 0.19798334371190118
+|    GOOG | 34.7% |
+|   GOOGL | 29.2% |
+|    MSFT | 11.7% |
+|    AMZN | 11.0% |
+|    AAPL | 8.7% |
+|    AVGO | 4.4% |
+associated_risk:  0.19798334371190118
+associated_return:  0.2611713779174578
+
+Iteration 249 - Best Sortino Ratio: 41.01877903955043
+|    GOOG | 56.5% |
+|     JPM | 36.8% |
+|    NVDA | 6.3% |
+associated_risk:  0.26924290917138755
+associated_return:  0.44028501287334565
+
+Iteration 249 - Best Return: 0.6447656964474188
+|     JPM | 99.5% |
+associated_risk:  0.47046473318795134
+associated_return:  0.6447656964474188
+
+Iteration 249: Return: 0.3456499367948553, Volatility: 0.22077617718992307
+|    GOOG | 166060.3% |
+|   GOOGL | 66184.8% |
+|     JPM | 64112.3% |
+|    NVDA | 53880.5% |
+|    MSFT | 28962.6% |
+|    AMZN | 24649.5% |
+|    AAPL | 15186.4% |
+associated_risk:  729.9693755519003
+associated_return:  335.7492100004499

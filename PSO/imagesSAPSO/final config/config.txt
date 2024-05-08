@@ -1,0 +1,50 @@
+teration 199: Return: 0.3559417085833416, Volatility: 0.2260149071099236
+|    GOOG | 160.2% |
+|    NVDA | 49.2% |
+|     JPM | 31.2% |
+|    MSFT | 27.8% |
+|    AAPL | 25.2% |
+|   GOOGL | 1.3% |
+associated_risk:  0.48798085203804087
+associated_return:  0.5449211303605226
+
+Iteration 199 - Best Sharpe Ratio: 1.6443844388754802
+|    GOOG | 49.4% |
+|     JPM | 32.4% |
+|    NVDA | 11.6% |
+|    AAPL | 6.2% |
+associated_risk:  0.2608806152181267
+associated_return:  0.42904489694871434
+
+Iteration 199 - Best Volatility: 0.19810593876221108
+|    GOOG | 35.1% |
+|   GOOGL | 29.7% |
+|    MSFT | 12.8% |
+|    META | 12.3% |
+|    AAPL | 9.6% |
+associated_risk:  0.19810593876221108
+associated_return:  0.2595631928286027
+
+Iteration 199 - Best Return: 0.6446470831375115
+|     JPM | 99.5% |
+associated_risk:  0.47036127482724244
+associated_return:  0.6446470831375115
+
+
+Iteration 199 - Best Sortino Ratio: 40.92968445129115
+|    GOOG | 58.5% |
+|     JPM | 41.0% |
+associated_risk:  0.2769532598264274
+associated_return:  0.44984489288090296
+
+teration 199: Return: 0.32502719503328964, Volatility: 0.21202426626277707
+|    GOOG | 38.0% |
+|    AMZN | 17.6% |
+|     JPM | 11.4% |
+|    AVGO | 9.5% |
+|    NVDA | 9.4% |
+|    AAPL | 8.2% |
+|     LLY | 8.1% |
+|    MSFT | 2.7% |
+associated_risk:  0.22848323204560372
+associated_return:  0.3411804146540042

@@ -1,0 +1,26 @@
+w=0.5 
+c1, c2 = 2
+particles = 50
+iterations =250
+
+
+Iteration 249 - Best Return: 0.6437630108984708
+|     JPM | 99.3% |
+associated_risk:  0.46958993180206493
+associated_return:  0.6437630108984708
+
+Iteration 249 - Best Sharpe Ratio: 1.640230970130011
+|    GOOG | 51.8% |
+|     JPM | 34.6% |
+|    NVDA | 12.9% |
+associated_risk:  0.26670911852125045
+associated_return:  0.43752142909439573
+
+Iteration 249 - Best Volatility: 0.1981007807524542
+|    GOOG | 35.1% |
+|   GOOGL | 29.7% |
+|    MSFT | 12.9% |
+|    AMZN | 12.4% |
+|    AAPL | 9.5% |
+associated_risk:  0.1981007807524542
+associated_return:  0.25992957712459197
