@@ -10,14 +10,14 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
     daily_returns = getStockReturns(selected_tickers, start_date, end_date)
 
     n_iterations = 250
-    n_particles = 10
+    n_particles = 30
     n_assets = len(selected_tickers)
     T_Bill = yf.download(['^IRX'], start_date, end_date)
     risk_free_rate = T_Bill['Adj Close'].mean()/100
 
     # PSO parameters
-    w = 0.9  # inertia
-    c1 = 2  # cognitive parameter
+    w = 0.9 # inertia
+    c1 = 2 # cognitive parameter
     c2 = 2  # social parameter
 
     if optimization_goal == '5':
@@ -39,7 +39,7 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
                     global_best_volatility = vol
             best_values_over_iterations.append((global_best_returns, global_best_volatility))
             for particle in swarm:
-                particle.update_velocity_and_position(global_best_position, w, c1, c2, iteration, n_iterations)
+                particle.update_velocity_and_position(global_best_position, w, c1, c2, iteration, n_iterations,swarm)
             
             print(f"Iteration {iteration}: Return: {global_best_returns}, Volatility: {global_best_volatility}")
 
@@ -97,7 +97,6 @@ def optimize_portfolio(selected_tickers, start_date, end_date, optimization_goal
 
     # Sort the list in descending order by weight
     sorted_ticker_weights = sorted(ticker_weights, key=lambda x: x[1], reverse=True)
-
 
 
     results = {

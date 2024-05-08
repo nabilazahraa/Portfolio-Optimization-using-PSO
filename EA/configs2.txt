@@ -1,0 +1,14 @@
+num_generations=1000, population_size=30
+
+Generation 999 - Best Sortino Ratio: 39.59303603081567
+{'optimization goal': '4', 'sorted_ticker_weights': [('GOOGL', 55.15420321373006), ('NFLX', 37.60218136515917), ('NVDA', 4.592792333503547)], 'associated_risk': 26.97571351155058, 'associated_return': 44.072592348490815}
+
+Generation 999 - Best Return: 0.6390448950705573
+{'optimization goal': '3', 'sorted_ticker_weights': [('NFLX', 97.89770965273213), ('AAPL', 1.1167666487294943)], 'associated_risk': 46.55107786577854, 'associated_return': 63.90448950705573}
+
+Generation 999 - Best Volatility: 0.19820877521955468
+{'optimization goal': '2', 'sorted_ticker_weights': [('GOOGL', 34.606739644784724), ('META', 28.772460841079255), ('AMZN', 11.272525726305199), ('MSFT', 10.485941709276679), ('AAPL', 6.9134590042474535), ('AVGO', 4.691011674138623), ('JPM', 1.5272210346051796), ('NVDA', 1.2710308815539824)], 'associated_risk': 19.820919028076453, 'associated_return': 26.41294945204545}
+
+
+Generation 999 - Best Sharpe Ratio: 1.587459539659098
+{'optimization goal': '1', 'sorted_ticker_weights': [('GOOGL', 47.92730814753176), ('NFLX', 32.44608484894076), ('NVDA', 10.442859627961393), ('AAPL', 3.333330813957241), ('JPM', 2.8446022143712995), ('MSFT', 1.2635387644942901)], 'associated_risk': 26.074425734662643, 'associated_return': 42.835570604652574}
